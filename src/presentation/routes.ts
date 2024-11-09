@@ -7,7 +7,6 @@ export class AppRoutes {
     const router = Router();
 
     // Definir las rutas principales
-
     router.use('/api/auth', AuthRoutes.routes);
     // router.use('/api/categories/', CategoryRoutes.routes);
 
