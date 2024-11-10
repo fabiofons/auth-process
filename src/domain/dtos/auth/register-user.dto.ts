@@ -10,11 +10,11 @@ export class RegisterUserDto {
 
   static create(object: { [key: string]: any }): [string?, RegisterUserDto?] {
     const { name, email, password } = object;
-    if (!name) return ['Missing name', undefined];
-    if (!email) return ['Missing email', undefined];
+    if (!name) return ['Missing name'];
+    if (!email) return ['Missing email'];
     if (!Validators.email.test(email)) return ['Email not valid'];
-    if (!password) return ['Missing password', undefined];
-    if (!password.length) return ['Password too short', undefined];
+    if (!password) return ['Missing password'];
+    if (!password.length) return ['Password too short'];
 
     return [undefined, new RegisterUserDto(name, email, password)];
   }
