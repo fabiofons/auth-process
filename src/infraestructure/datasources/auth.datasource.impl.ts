@@ -1,6 +1,7 @@
 import { BcryptAdapter } from "../../config";
 import { UserModel } from "../../data/mongodb";
 import { AuthDatasource, CustomError, RegisterUserDto, UserEntity } from "../../domain";
+import { UserMapper } from "../mappers/user.mapper";
 
 
 type HashFunction = (password: string) => string;
@@ -33,16 +34,7 @@ export class AuthDatasourceImpl implements AuthDatasource {
       //2. Hashear la constraseña
 
       //3. Mapear la data con nuestra entidad
-      //Todo: el mapper
-
-
-      return new UserEntity(
-        user.id,
-        name,
-        email,
-        user.password,
-        user.roles,
-      );
+      return UserMapper.userEntityFromObject(user);
 
 
     } catch (error) {
