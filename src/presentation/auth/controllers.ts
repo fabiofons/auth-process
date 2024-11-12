@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express"
+import { Request, Response } from "express"
 import { AuthRepository, CustomError, RegisterUser, RegisterUserDto } from "../../domain";
-import { JwtAdapter } from "../../config";
 import { UserModel } from "../../data/mongodb";
 import { LoginUserDto } from "../../domain/dtos/auth/login-user.dto";
+import { LoginUser } from "../../domain/use-cases/auth/login-user.use-case";
 
 export class AuthController {
   constructor(
@@ -32,6 +32,12 @@ export class AuthController {
     const [error, loginUserDto] = LoginUserDto.create(req.body);
 
     if (error) return res.status(401).json({ error })
+
+    new LoginUser(this.authRepository)
+      .execute(loginUserDto!)
+      .then(data => res.json(data))
+      .catch(error => this.handleError(error, res))
+
   }
 
   getUsers = (req: Request, res: Response) => {
