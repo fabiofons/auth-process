@@ -1,6 +1,7 @@
-import { Router } from "express";
+import { RequestHandler, Router } from "express";
 import { AuthController } from "./controllers";
 import { AuthDatasourceImpl, AuthRepositoryImpl } from "../../infraestructure";
+import { AuthMiddleware } from "../middlewares/auth/auth.middleware";
 
 
 export class AuthRoutes {
@@ -11,8 +12,10 @@ export class AuthRoutes {
     const authRepository = new AuthRepositoryImpl(datasource);
     const controller = new AuthController(authRepository);
     // Definir las rutas principales
-    router.use('/login', controller.loginUser);
-    router.use('/register', controller.registerUser);
+    router.post('/login', controller.loginUser);
+    router.post('/register', controller.registerUser);
+
+    router.get('/', AuthMiddleware.validateJWT as RequestHandler, controller.getUsers);
 
     return router;
   }

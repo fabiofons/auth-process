@@ -1,5 +1,8 @@
-import { Request, Response } from "express"
-import { AuthRepository, CustomError, RegisterUserDto } from "../../domain";
+import { NextFunction, Request, Response } from "express"
+import { AuthRepository, CustomError, RegisterUser, RegisterUserDto } from "../../domain";
+import { JwtAdapter } from "../../config";
+import { UserModel } from "../../data/mongodb";
+import { LoginUserDto } from "../../domain/dtos/auth/login-user.dto";
 
 export class AuthController {
   constructor(
@@ -19,12 +22,23 @@ export class AuthController {
 
     if (error) res.status(400).json({ error });
 
-    this.authRepository.register(registerUserDto!)
-      .then((user) => res.json(user))
-      .catch((error) => this.handleError(error, res));
+    new RegisterUser(this.authRepository)
+      .execute(registerUserDto!)
+      .then(data => res.json(data))
+      .catch(error => this.handleError(error, res))
   }
 
   loginUser = (req: Request, res: Response) => {
-    res.json('login user controller');
+    const [error, loginUserDto] = LoginUserDto.create(req.body);
+
+    if (error) return res.status(401).json({ error })
+  }
+
+  getUsers = (req: Request, res: Response) => {
+    UserModel.find()
+      .then((users) => res.json({
+        user: req.body.user
+      }))
+      .catch((err) => this.handleError(err, res));
   }
 }
